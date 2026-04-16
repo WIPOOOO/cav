@@ -22,7 +22,6 @@
     }
 
     html { 
-      /* Essential: Forces the browser to keep the scrollbar area consistent */
       scrollbar-gutter: stable; 
     }
 
@@ -45,7 +44,6 @@
       -webkit-backdrop-filter: blur(20px); 
       padding: 10px 40px; 
       display: grid; 
-      /* Perfect 3-column split to lock center logo */
       grid-template-columns: 1fr 1fr 1fr; 
       align-items: center; 
       border-bottom: 1px solid var(--border); 
@@ -171,7 +169,8 @@
   function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
   for (let i = 1; i <= maxImages; i++) {
-    const fileName = `${i}.png`;
+    // FIXED: Changed extension to .webp
+    const fileName = `${i}.webp`; 
     const item = document.createElement('div');
     item.className = 'gallery-item';
     item.innerHTML = `<img src="${fileName}" alt="Print ${i}" loading="lazy">`;
