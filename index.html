@@ -21,7 +21,6 @@
       --muted: #888; 
     }
 
-    /* FIX: Allow body to grow with content while keeping footer at bottom */
     html, body { 
       min-height: 100vh;
       width: 100%; 
@@ -47,7 +46,6 @@
     .header-socials a { color: var(--muted); font-size: 19px; transition: 0.3s; text-decoration: none; }
     .header-socials a:hover { color: var(--text); }
     
-    /* FIX: Main container handles the spacing properly */
     main { 
       flex: 1; 
       padding: 140px 40px 60px; 
@@ -62,19 +60,17 @@
       color: var(--muted); text-align: center;
     }
 
-    /* NEW STYLE: Modern responsive grid */
     .collection-grid { 
       display: grid; 
       grid-template-columns: repeat(3, 1fr); 
       gap: 20px; 
     }
 
-    /* FIX: Removed aspect-ratio, used padding/height for reliability */
     .card { 
       background: var(--glass); 
       border: 1px solid var(--border); 
       border-radius: 15px; 
-      height: 160px; /* Fixed height ensures they fit on screen */
+      height: 160px; 
       display: flex; 
       justify-content: center; 
       align-items: center;
@@ -85,7 +81,6 @@
       overflow: hidden;
     }
 
-    /* Subtle glow effect on hover */
     .card::before {
       content: '';
       position: absolute;
@@ -111,20 +106,13 @@
       z-index: 1;
     }
 
-    /* Other card style */
-    .card.other-card {
-      border-style: dashed;
-      background: rgba(255, 255, 255, 0.01);
-    }
-
     footer { 
-      padding: 30px; text-align: center;
+      flex-shrink: 0; padding: 30px; text-align: center;
       font-size: 9px; color: var(--muted); letter-spacing: 3px; 
       border-top: 1px solid var(--border);
       background: #000;
     }
 
-    /* RESPONSIVE FIXES */
     @media (max-width: 900px) { 
       .collection-grid { grid-template-columns: repeat(2, 1fr); } 
       header { padding: 10px 20px; }
@@ -162,7 +150,7 @@
     <a href="Islam/index.html" class="card"><h2>Islam</h2></a>
     <a href="Movies/index.html" class="card"><h2>Movies</h2></a>
     <a href="Quotes/index.html" class="card"><h2>Quotes</h2></a>
-    <a href="Other/index.html" class="card other-card"><h2>Other</h2></a>
+    <a href="Other/index.html" class="card"><h2>Other</h2></a>
   </div>
 </main>
 
