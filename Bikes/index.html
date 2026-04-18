@@ -92,28 +92,33 @@
 
     .close-lightbox { position: absolute; top: 30px; right: 40px; color: white; font-size: 35px; cursor: pointer; }
 
-    /* FIXED: Darker glass for better visibility */
     #backToTop {
       position: fixed; bottom: 30px; right: 30px; width: 45px; height: 45px;
-      background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(0, 0, 2, 0.8); border: 1.5px solid #000000;
       backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-      color: var(--text); border-radius: 50%; display: flex;
+      color: #ffffff; border-radius: 50%; display: flex;
       justify-content: center; align-items: center; cursor: pointer;
-      opacity: 0; visibility: hidden; transition: 0.3s; z-index: 1500;
+      opacity: 0; visibility: hidden; transition: all 0.3s ease; 
+      z-index: 1500; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
     }
     #backToTop.show { opacity: 1; visibility: visible; }
-    #backToTop:hover { background: rgba(255, 255, 255, 0.2); transform: translateY(-3px); }
+    #backToTop:hover { transform: translateY(-5px); background: #000000; }
 
-    /* ADDED: Contact Section Styles */
     .contact-section {
-      text-align: center; padding: 60px 20px;
-      border-top: 1px solid var(--border); margin-top: 60px;
+      text-align: center; padding: 100px 20px 60px;
+      margin-top: 20px;
     }
-    .contact-section p { font-size: 14px; color: var(--text); margin-bottom: 5px; letter-spacing: 1px; }
-    .contact-section .darija { color: var(--muted); font-size: 13px; margin-bottom: 25px; }
-    .contact-icons { display: flex; justify-content: center; gap: 30px; }
-    .contact-icons a { color: var(--text); font-size: 28px; transition: 0.3s; }
-    .contact-icons a:hover { color: var(--muted); transform: scale(1.1); }
+    .contact-section p { 
+      font-size: 16px; font-weight: 500; color: var(--text); 
+      margin-bottom: 8px; letter-spacing: 1.5px; text-transform: uppercase;
+    }
+    .contact-section .darija { 
+      color: var(--muted); font-size: 14px; font-weight: 300;
+      margin-bottom: 35px; text-transform: none; letter-spacing: 1px;
+    }
+    .contact-icons { display: flex; justify-content: center; gap: 40px; }
+    .contact-icons a { color: var(--text); font-size: 32px; transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); }
+    .contact-icons a:hover { color: var(--muted); transform: scale(1.2); }
     
     footer { padding: 40px 20px; text-align: center; font-size: 9px; color: var(--muted); letter-spacing: 3px; border-top: 1px solid var(--border); }
 
@@ -152,8 +157,8 @@
 <div id="backToTop" onclick="scrollToTop()"><i class="fa-solid fa-chevron-up"></i></div>
 
 <div class="contact-section">
-  <p>Couldn't find what you're looking for? Send us a WhatsApp or Instagram message</p>
-  <p class="darija">Malqitich lli katqelleb 3lih? Sifet lina f WhatsApp awlla Instagram</p>
+  <p>Custom designs available upon request</p>
+  <p class="darija">Sifet lina f WhatsApp awlla Instagram lli bghiti t-personnaliser</p>
   <div class="contact-icons">
     <a href="https://www.instagram.com/caversen.maroc/" target="_blank"><i class="fab fa-instagram"></i></a>
     <a href="https://wa.me/212700256668" target="_blank"><i class="fab fa-whatsapp"></i></a>
