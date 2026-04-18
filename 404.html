@@ -7,13 +7,14 @@
   
   <link rel="icon" type="image/png" href="/favicon.png">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     
     :root { 
       --bg-dark: #000000;
-      --glass: rgba(255, 255, 255, 0.05); 
+      --glass: rgba(255, 255, 255, 0.03); 
       --border: rgba(255, 255, 255, 0.1); 
       --text: #f0ece4; 
       --muted: #888; 
@@ -24,136 +25,99 @@
       color: var(--text); 
       font-family: 'Montserrat', sans-serif; 
       height: 100vh;
-      overflow: hidden;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Matching Main Page Header */
+    header { 
+      position: fixed; top: 0; left: 0; width: 100%;
+      background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px); padding: 10px 40px; 
+      display: grid; grid-template-columns: 1fr 1fr 1fr; 
+      align-items: center; border-bottom: 1px solid var(--border); z-index: 1000;
+    }
+
+    .header-left { display: flex; justify-content: flex-start; }
+    
+    .logo { display: flex; justify-content: center; text-decoration: none; }
+    .logo img { height: 75px; width: auto; display: block; }
+
+    .header-socials { display: flex; gap: 20px; justify-content: flex-end; }
+    .header-socials a { color: var(--muted); font-size: 19px; transition: 0.3s; text-decoration: none; }
+    .header-socials a:hover { color: var(--text); }
+
+    main {
+      flex: 1;
+      display: flex;
       justify-content: center;
       align-items: center;
       text-align: center;
-    }
-
-    /* Moving Background Container */
-    #bg-container {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      z-index: -1;
-      filter: blur(50px) brightness(0.4);
-      overflow: hidden;
-      pointer-events: none;
-    }
-
-    .bg-img {
-      position: absolute;
-      width: 350px;
-      height: auto;
-      border-radius: 30px;
-      opacity: 0.5;
-      /* Smooth linear movement */
-      transition: top 15s linear, left 15s linear, transform 15s linear;
-      will-change: top, left, transform;
-    }
-
-    .logo-404 {
-      height: 80px;
-      width: auto;
-      margin-bottom: 30px;
-      opacity: 0.9;
-      z-index: 10;
+      padding: 20px;
     }
 
     .error-container {
       background: var(--glass);
       border: 1px solid var(--border);
-      padding: 50px 40px;
+      padding: 60px 40px;
       border-radius: 24px;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
       max-width: 450px;
-      width: 90%;
-      z-index: 10;
+      width: 100%;
     }
 
-    h1 { font-size: 60px; font-weight: 700; margin-bottom: 5px; }
-    p { color: var(--muted); margin-bottom: 30px; letter-spacing: 1px; }
+    h1 { font-size: 70px; font-weight: 700; margin-bottom: 10px; letter-spacing: -2px; }
+    p { color: var(--muted); margin-bottom: 35px; letter-spacing: 1px; font-size: 14px; }
 
     .home-btn {
       display: inline-block;
       text-decoration: none;
       color: #000;
       background: #ffffff;
-      padding: 14px 30px;
+      padding: 15px 35px;
       border-radius: 50px;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 2px;
-      transition: 0.3s;
+      transition: 0.3s ease;
     }
 
     .home-btn:hover {
       transform: translateY(-3px);
       box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
+      opacity: 0.9;
+    }
+
+    @media (max-width: 600px) {
+      header { padding: 10px 20px; }
+      .logo img { height: 60px; }
+      h1 { font-size: 50px; }
     }
   </style>
 </head>
 <body>
 
-<div id="bg-container"></div>
+<header>
+  <div class="header-left"></div> 
+  <a class="logo" href="/">
+    <img src="/logo.png" alt="Logo">
+  </a>
+  <div class="header-socials">
+    <a href="https://www.instagram.com/caversen.maroc/" target="_blank"><i class="fab fa-instagram"></i></a>
+    <a href="https://wa.me/212700256668" target="_blank"><i class="fab fa-whatsapp"></i></a>
+  </div>
+</header>
 
-<img src="/logo.png" alt="Caversen Logo" class="logo-404">
-
-<div class="error-container">
-  <h1>404</h1>
-  <p>The page you are looking for doesn't exist.</p>
-  <a href="/" class="home-btn">Back to Home</a>
-</div>
-
-<script>
-  const categories = ['Anime', 'Bikes', 'Cars', 'Football', 'Gaming', 'Islam', 'Movies', 'Girls', 'Quotes'];
-  const container = document.getElementById('bg-container');
-  const imgCount = 6; // Increased to 6 images
-
-  function createImg() {
-    const img = document.createElement('img');
-    const randomCat = categories[Math.floor(Math.random() * categories.length)];
-    // Random number between 1 and 20 (standardizing to a safe range)
-    const randomNum = Math.floor(Math.random() * 20) + 1; 
-    
-    img.src = `/${randomCat}/${randomNum}.webp`;
-    img.className = 'bg-img';
-    
-    // Initial random placement
-    img.style.top = Math.random() * 100 + 'vh';
-    img.style.left = Math.random() * 100 + 'vw';
-    
-    container.appendChild(img);
-    
-    // Delayed start to ensure the browser registers the initial position
-    setTimeout(() => {
-      moveImg(img);
-    }, 100);
-  }
-
-  function moveImg(img) {
-    // Generate new coordinates
-    const newTop = Math.random() * 110 - 10; // Allow slightly off-screen
-    const newLeft = Math.random() * 110 - 10;
-    const newRotate = Math.random() * 360;
-    const newScale = Math.random() * 0.5 + 0.8;
-
-    img.style.top = `${newTop}vh`;
-    img.style.left = `${newLeft}vw`;
-    img.style.transform = `rotate(${newRotate}deg) scale(${newScale})`;
-    
-    // When the 15s transition finishes, move again
-    setTimeout(() => moveImg(img), 15000);
-  }
-
-  // Generate the 6 images
-  for(let i=0; i < imgCount; i++) {
-    createImg();
-  }
-</script>
+<main>
+  <div class="error-container">
+    <h1>404</h1>
+    <p>The page you are looking for doesn't exist.</p>
+    <a href="/" class="home-btn">Back to Home</a>
+  </div>
+</main>
 
 </body>
 </html>
