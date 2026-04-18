@@ -92,17 +92,17 @@
 
     .close-lightbox { position: absolute; top: 30px; right: 40px; color: white; font-size: 35px; cursor: pointer; }
 
+    /* FIXED: Solid dark circle with white border */
     #backToTop {
       position: fixed; bottom: 30px; right: 30px; width: 45px; height: 45px;
-      background: rgba(0, 0, 2, 0.8); border: 1.5px solid #000000;
-      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      background: #0a0a0a; border: 2px solid #ffffff;
       color: #ffffff; border-radius: 50%; display: flex;
       justify-content: center; align-items: center; cursor: pointer;
       opacity: 0; visibility: hidden; transition: all 0.3s ease; 
-      z-index: 1500; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      z-index: 1500; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
     }
     #backToTop.show { opacity: 1; visibility: visible; }
-    #backToTop:hover { transform: translateY(-5px); background: #000000; }
+    #backToTop:hover { transform: translateY(-5px); background: #000000; box-shadow: 0 6px 20px rgba(255,255,255,0.1); }
 
     .contact-section {
       text-align: center; padding: 100px 20px;
