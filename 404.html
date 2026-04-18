@@ -37,17 +37,20 @@
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
       z-index: -1;
-      filter: blur(40px) brightness(0.4);
+      filter: blur(50px) brightness(0.4);
       overflow: hidden;
+      pointer-events: none;
     }
 
     .bg-img {
       position: absolute;
-      width: 300px;
+      width: 350px;
       height: auto;
-      border-radius: 20px;
-      opacity: 0.6;
-      transition: all 10s linear;
+      border-radius: 30px;
+      opacity: 0.5;
+      /* Smooth linear movement */
+      transition: top 15s linear, left 15s linear, transform 15s linear;
+      will-change: top, left, transform;
     }
 
     .logo-404 {
@@ -55,6 +58,7 @@
       width: auto;
       margin-bottom: 30px;
       opacity: 0.9;
+      z-index: 10;
     }
 
     .error-container {
@@ -105,42 +109,47 @@
 </div>
 
 <script>
-  // Folders to pull random images from
   const categories = ['Anime', 'Bikes', 'Cars', 'Football', 'Gaming', 'Islam', 'Movies', 'Girls', 'Quotes'];
   const container = document.getElementById('bg-container');
-  const imgCount = 8; // Number of floating images
+  const imgCount = 6; // Increased to 6 images
 
   function createImg() {
     const img = document.createElement('img');
     const randomCat = categories[Math.floor(Math.random() * categories.length)];
-    const randomNum = Math.floor(Math.random() * 50) + 1; // Assuming images are 1-50
+    // Random number between 1 and 20 (standardizing to a safe range)
+    const randomNum = Math.floor(Math.random() * 20) + 1; 
     
     img.src = `/${randomCat}/${randomNum}.webp`;
     img.className = 'bg-img';
     
-    // Random start position
-    resetPos(img);
+    // Initial random placement
+    img.style.top = Math.random() * 100 + 'vh';
+    img.style.left = Math.random() * 100 + 'vw';
     
     container.appendChild(img);
     
-    // Kickstart movement
-    setTimeout(() => moveImg(img), 100);
-  }
-
-  function resetPos(img) {
-    img.style.top = Math.random() * 100 + 'vh';
-    img.style.left = Math.random() * 100 + 'vw';
+    // Delayed start to ensure the browser registers the initial position
+    setTimeout(() => {
+      moveImg(img);
+    }, 100);
   }
 
   function moveImg(img) {
-    img.style.top = Math.random() * 80 + 'vh';
-    img.style.left = Math.random() * 80 + 'vw';
-    img.style.transform = `scale(${Math.random() + 0.5}) rotate(${Math.random() * 360}deg)`;
+    // Generate new coordinates
+    const newTop = Math.random() * 110 - 10; // Allow slightly off-screen
+    const newLeft = Math.random() * 110 - 10;
+    const newRotate = Math.random() * 360;
+    const newScale = Math.random() * 0.5 + 0.8;
+
+    img.style.top = `${newTop}vh`;
+    img.style.left = `${newLeft}vw`;
+    img.style.transform = `rotate(${newRotate}deg) scale(${newScale})`;
     
-    setTimeout(() => moveImg(img), 10000); // New move every 10 seconds
+    // When the 15s transition finishes, move again
+    setTimeout(() => moveImg(img), 15000);
   }
 
-  // Initialize images
+  // Generate the 6 images
   for(let i=0; i < imgCount; i++) {
     createImg();
   }
