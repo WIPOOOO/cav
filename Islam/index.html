@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Anime — Caversen Print</title>
+  <title>Islam — Caversen Print</title>
   
   <link rel="icon" type="image/png" href="../favicon.png?v=2">
 
@@ -21,10 +21,7 @@
       --muted: #888; 
     }
 
-    html { 
-      /* Essential: Forces the browser to keep the scrollbar area consistent */
-      scrollbar-gutter: stable; 
-    }
+    html { scrollbar-gutter: stable; }
 
     body { 
       background-color: var(--bg-dark); 
@@ -36,20 +33,11 @@
     }
 
     header { 
-      position: fixed; 
-      top: 0; 
-      left: 0; 
-      width: 100%;
-      background: rgba(0, 0, 0, 0.7); 
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px); 
-      padding: 10px 40px; 
-      display: grid; 
-      /* Perfect 3-column split to lock center logo */
-      grid-template-columns: 1fr 1fr 1fr; 
-      align-items: center; 
-      border-bottom: 1px solid var(--border); 
-      z-index: 1000;
+      position: fixed; top: 0; left: 0; width: 100%;
+      background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px); padding: 10px 40px; 
+      display: grid; grid-template-columns: 1fr 1fr 1fr; 
+      align-items: center; border-bottom: 1px solid var(--border); z-index: 1000;
     }
 
     .header-left, .header-socials { display: flex; width: 100%; }
@@ -78,9 +66,7 @@
     }
 
     .gallery { 
-      display: grid; 
-      grid-template-columns: repeat(4, 1fr); 
-      gap: 20px; 
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; 
       animation: fadeIn 0.6s ease-out; 
     }
     
@@ -106,14 +92,45 @@
 
     .close-lightbox { position: absolute; top: 30px; right: 40px; color: white; font-size: 35px; cursor: pointer; }
 
+    /* FIXED: Solid dark circle with white border */
     #backToTop {
       position: fixed; bottom: 30px; right: 30px; width: 45px; height: 45px;
-      background: rgba(255,255,255,0.05); border: 1px solid var(--border);
-      color: var(--text); border-radius: 50%; display: flex;
+      background: #0a0a0a; border: 2px solid #ffffff;
+      color: #ffffff; border-radius: 50%; display: flex;
       justify-content: center; align-items: center; cursor: pointer;
-      opacity: 0; visibility: hidden; transition: 0.3s; z-index: 1500;
+      opacity: 0; visibility: hidden; transition: all 0.3s ease; 
+      z-index: 1500; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
     }
     #backToTop.show { opacity: 1; visibility: visible; }
+    #backToTop:hover { transform: translateY(-5px); background: #000000; box-shadow: 0 6px 20px rgba(255,255,255,0.1); }
+
+    .contact-section {
+      text-align: center; padding: 100px 20px;
+      margin-top: 20px;
+    }
+    .contact-title { 
+      font-size: 16px; font-weight: 500; color: var(--text); 
+      margin-bottom: 40px; letter-spacing: 2px; text-transform: uppercase;
+    }
+    .contact-button-container {
+      display: flex; flex-direction: column; align-items: center; gap: 15px;
+    }
+    .contact-btn {
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      width: 100%; max-width: 320px; padding: 16px 30px;
+      background: rgba(255, 255, 255, 0.05); border: 1.5px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50px; color: var(--text); text-decoration: none;
+      font-size: 14px; font-weight: 500; letter-spacing: 1px;
+      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    }
+    .contact-btn i { font-size: 20px; }
+    .contact-btn:hover {
+      background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.4);
+      transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+    .contact-btn.whatsapp:hover i { color: #25D366; }
+    .contact-btn.instagram:hover i { color: #E1306C; }
     
     footer { padding: 40px 20px; text-align: center; font-size: 9px; color: var(--muted); letter-spacing: 3px; border-top: 1px solid var(--border); }
 
@@ -124,6 +141,7 @@
       main { padding-top: 130px; } 
     }
     @media (max-width: 500px) { .gallery { grid-template-columns: 1fr; } }
+    @media (min-width: 768px) { .contact-button-container { flex-direction: row; justify-content: center; } }
   </style>
 </head>
 <body>
@@ -140,7 +158,7 @@
 </header>
 
 <main>
-  <h1 class="page-title">Anime</h1>
+  <h1 class="page-title">Islam</h1>
   <div class="gallery" id="gallery"></div>
 </main>
 
@@ -150,6 +168,20 @@
 </div>
 
 <div id="backToTop" onclick="scrollToTop()"><i class="fa-solid fa-chevron-up"></i></div>
+
+<div class="contact-section">
+  <p class="contact-title">Custom designs available upon request</p>
+  <div class="contact-button-container">
+    <a href="https://wa.me/212700256668" target="_blank" class="contact-btn whatsapp">
+      <i class="fab fa-whatsapp"></i>
+      <span>Message on WhatsApp</span>
+    </a>
+    <a href="https://www.instagram.com/caversen.maroc/" target="_blank" class="contact-btn instagram">
+      <i class="fab fa-instagram"></i>
+      <span>Message on Instagram</span>
+    </a>
+  </div>
+</div>
 
 <footer><p>© 2026 CAVERSEN PRINT — MOROCCO</p></footer>
 
@@ -171,7 +203,7 @@
   function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
   for (let i = 1; i <= maxImages; i++) {
-    const fileName = `${i}.png`;
+    const fileName = `${i}.webp`; 
     const item = document.createElement('div');
     item.className = 'gallery-item';
     item.innerHTML = `<img src="${fileName}" alt="Print ${i}" loading="lazy">`;
