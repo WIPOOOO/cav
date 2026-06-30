@@ -141,20 +141,21 @@
 
     .lightbox-arrow {
       position: absolute; top: 50%; transform: translateY(-50%);
-      color: white; font-size: 24px; cursor: pointer;
-      width: 50px; height: 50px;
+      color: #ffffff; font-size: 18px; cursor: pointer;
+      width: 45px; height: 45px;
       display: flex; align-items: center; justify-content: center;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.2);
+      background: #0a0a0a;
+      border: 2px solid #ffffff;
       border-radius: 50%;
-      transition: all 0.25s ease;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
       z-index: 2001;
     }
-    .lightbox-arrow:hover { background: rgba(255,255,255,0.18); }
+    .lightbox-arrow:hover { background: #000000; box-shadow: 0 6px 20px rgba(255,255,255,0.1); }
     .lightbox-arrow.prev { left: 25px; }
     .lightbox-arrow.next { right: 25px; }
     @media (max-width: 600px) {
-      .lightbox-arrow { width: 40px; height: 40px; font-size: 18px; }
+      .lightbox-arrow { width: 38px; height: 38px; font-size: 15px; }
       .lightbox-arrow.prev { left: 10px; }
       .lightbox-arrow.next { right: 10px; }
     }
@@ -409,6 +410,24 @@
     if (e.key === 'ArrowLeft') prevImage();
     if (e.key === 'Escape') closeLightbox();
   });
+
+  // Swipe support (touch devices)
+  let touchStartX = 0;
+  let touchEndX = 0;
+  const SWIPE_THRESHOLD = 50; // min px distance to count as a swipe
+
+  lightbox.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+  }, { passive: true });
+
+  lightbox.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    const diff = touchEndX - touchStartX;
+    if (Math.abs(diff) > SWIPE_THRESHOLD) {
+      if (diff < 0) nextImage(); // swiped left → next
+      else prevImage();          // swiped right → prev
+    }
+  }, { passive: true });
 
   // ── BACK TO TOP ──
   window.onscroll = () => backToTop.classList.toggle('show', window.scrollY > 400);
