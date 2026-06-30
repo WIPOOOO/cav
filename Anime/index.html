@@ -72,6 +72,28 @@
     
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+    /* ── LOADING SPINNER ── */
+    .gallery-loading {
+      grid-column: 1 / -1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 100px 20px;
+      gap: 20px;
+    }
+    .spinner {
+      width: 36px; height: 36px;
+      border: 2px solid var(--border);
+      border-top-color: var(--text);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .gallery-loading p {
+      font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted);
+    }
+
     .gallery-item { 
       background: var(--glass); border: 1px solid var(--border); 
       border-radius: 12px; overflow: hidden; cursor: zoom-in;
@@ -169,7 +191,7 @@
   </div>
   <a class="logo" href="../index.html"><img src="../logo.png" alt="Logo"></a>
   <div class="header-socials">
-    <a href="https://www.instagram.com/caversen.maroc/" target="_blank"><i class="fab fa-instagram"></i></a>
+    <a href="https://www.instagram.com/caversen.ma/" target="_blank"><i class="fab fa-instagram"></i></a>
     <a href="https://wa.me/212700256668" target="_blank"><i class="fab fa-whatsapp"></i></a>
   </div>
 </header>
@@ -177,7 +199,12 @@
 <main>
   <!-- ✏️ CHANGE: heading per category -->
   <h1 class="page-title">Anime</h1>
-  <div class="gallery" id="gallery"></div>
+  <div class="gallery" id="gallery">
+    <div class="gallery-loading" id="galleryLoading">
+      <div class="spinner"></div>
+      <p>Loading images…</p>
+    </div>
+  </div>
   <div class="pagination" id="pagination"></div>
 </main>
 
@@ -195,7 +222,7 @@
       <i class="fab fa-whatsapp"></i>
       <span>Message on WhatsApp</span>
     </a>
-    <a href="https://www.instagram.com/caversen.maroc/" target="_blank" class="contact-btn instagram">
+    <a href="https://www.instagram.com/caversen.ma/" target="_blank" class="contact-btn instagram">
       <i class="fab fa-instagram"></i>
       <span>Message on Instagram</span>
     </a>
@@ -218,26 +245,48 @@
   let currentPage = 1;
   let totalPages = 1;
 
-  // ── STEP 1: discover how many images exist ──
-  // tries 1.webp, 2.webp... stops when one 404s
+  // ── STEP 1: discover how many images exist (FAST — checks in parallel batches) ──
   function discoverImages() {
-    let i = 1;
-    function tryNext() {
-      const fileName = `${i}.webp`;
-      const img = new Image();
-      img.src = fileName;
-      img.onload = () => {
-        allImages.push(fileName);
-        i++;
-        tryNext();
-      };
-      img.onerror = () => {
-        // done — now we know total
-        totalPages = Math.max(1, Math.ceil(allImages.length / IMAGES_PER_PAGE));
-        renderPage(1);
-      };
+    const BATCH_SIZE = 15; // check 15 numbers at once
+    let nextToCheck = 1;
+    let keepGoing = true;
+
+    function checkOne(num) {
+      return new Promise(resolve => {
+        const fileName = `${num}.webp`;
+        const img = new Image();
+        img.onload = () => resolve({ num, fileName, exists: true });
+        img.onerror = () => resolve({ num, fileName, exists: false });
+        img.src = fileName;
+      });
     }
-    tryNext();
+
+    function runBatch() {
+      if (!keepGoing) return;
+      const batchNums = [];
+      for (let i = 0; i < BATCH_SIZE; i++) batchNums.push(nextToCheck + i);
+      nextToCheck += BATCH_SIZE;
+
+      Promise.all(batchNums.map(checkOne)).then(results => {
+        results.sort((a, b) => a.num - b.num);
+        for (const r of results) {
+          if (r.exists) {
+            allImages.push(r.fileName);
+          } else {
+            keepGoing = false;
+            break;
+          }
+        }
+        if (keepGoing) {
+          runBatch();
+        } else {
+          totalPages = Math.max(1, Math.ceil(allImages.length / IMAGES_PER_PAGE));
+          renderPage(1);
+        }
+      });
+    }
+
+    runBatch();
   }
 
   // ── STEP 2: render one page of images ──
