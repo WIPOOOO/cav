@@ -139,6 +139,26 @@
     .lightbox img { max-width: 90%; max-height: 85%; border-radius: 4px; }
     .close-lightbox { position: absolute; top: 30px; right: 40px; color: white; font-size: 35px; cursor: pointer; }
 
+    .lightbox-arrow {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      color: white; font-size: 24px; cursor: pointer;
+      width: 50px; height: 50px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 50%;
+      transition: all 0.25s ease;
+      z-index: 2001;
+    }
+    .lightbox-arrow:hover { background: rgba(255,255,255,0.18); }
+    .lightbox-arrow.prev { left: 25px; }
+    .lightbox-arrow.next { right: 25px; }
+    @media (max-width: 600px) {
+      .lightbox-arrow { width: 40px; height: 40px; font-size: 18px; }
+      .lightbox-arrow.prev { left: 10px; }
+      .lightbox-arrow.next { right: 10px; }
+    }
+
     #backToTop {
       position: fixed; bottom: 30px; right: 30px; width: 45px; height: 45px;
       background: #0a0a0a; border: 2px solid #ffffff;
@@ -210,7 +230,9 @@
 
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
   <span class="close-lightbox">&times;</span>
+  <span class="lightbox-arrow prev" onclick="event.stopPropagation(); prevImage()"><i class="fa-solid fa-chevron-left"></i></span>
   <img id="lightbox-img" src="" alt="View Print" onclick="event.stopPropagation()">
+  <span class="lightbox-arrow next" onclick="event.stopPropagation(); nextImage()"><i class="fa-solid fa-chevron-right"></i></span>
 </div>
 
 <div id="backToTop" onclick="scrollToTop()"><i class="fa-solid fa-chevron-up"></i></div>
@@ -290,7 +312,7 @@
   }
 
   // ── STEP 2: render one page of images ──
-  function renderPage(page) {
+  function renderGalleryOnly(page) {
     currentPage = page;
     gallery.innerHTML = '';
 
@@ -302,11 +324,15 @@
       const item = document.createElement('div');
       item.className = 'gallery-item';
       item.innerHTML = `<img src="${fileName}" alt="Print ${start + idx + 1}" loading="lazy">`;
-      item.onclick = () => openLightbox(fileName);
+      item.onclick = () => openLightbox(start + idx);
       gallery.appendChild(item);
     });
 
     renderPagination();
+  }
+
+  function renderPage(page) {
+    renderGalleryOnly(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -346,8 +372,43 @@
   }
 
   // ── LIGHTBOX ──
-  function openLightbox(src) { lightboxImg.src = src; lightbox.classList.add('active'); document.body.style.overflow = 'hidden'; }
+  let lightboxIndex = 0; // current index into allImages
+
+  function openLightbox(index) {
+    lightboxIndex = index;
+    lightboxImg.src = allImages[lightboxIndex];
+    lightbox.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
   function closeLightbox() { lightbox.classList.remove('active'); document.body.style.overflow = 'auto'; }
+
+  function nextImage() {
+    lightboxIndex = (lightboxIndex + 1) % allImages.length;
+    lightboxImg.src = allImages[lightboxIndex];
+    syncPageToLightbox();
+  }
+  function prevImage() {
+    lightboxIndex = (lightboxIndex - 1 + allImages.length) % allImages.length;
+    lightboxImg.src = allImages[lightboxIndex];
+    syncPageToLightbox();
+  }
+
+  // If browsing crosses into a different page, switch the gallery page underneath silently
+  function syncPageToLightbox() {
+    const targetPage = Math.floor(lightboxIndex / IMAGES_PER_PAGE) + 1;
+    if (targetPage !== currentPage) {
+      currentPage = targetPage;
+      renderGalleryOnly(targetPage);
+    }
+  }
+
+  // Keyboard arrows
+  document.addEventListener('keydown', (e) => {
+    if (!lightbox.classList.contains('active')) return;
+    if (e.key === 'ArrowRight') nextImage();
+    if (e.key === 'ArrowLeft') prevImage();
+    if (e.key === 'Escape') closeLightbox();
+  });
 
   // ── BACK TO TOP ──
   window.onscroll = () => backToTop.classList.toggle('show', window.scrollY > 400);
