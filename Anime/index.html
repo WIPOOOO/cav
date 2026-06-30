@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- ✏️ CHANGE: title per category -->
   <title>Anime — Caversen Print</title>
   
   <link rel="icon" type="image/png" href="../favicon.png?v=2">
-
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
@@ -81,6 +81,32 @@
     .gallery-item img { width: 100%; display: block; transition: 0.5s ease; }
     .gallery-item:hover img { transform: scale(1.03); }
 
+    /* ── PAGINATION ── */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-top: 60px;
+      flex-wrap: wrap;
+    }
+    .page-btn {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: var(--glass);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .page-btn:hover { border-color: rgba(255,255,255,0.3); color: var(--text); background: var(--glass-hover); }
+    .page-btn.active { background: white; border-color: white; color: black; font-weight: 600; }
+    .page-btn:disabled { opacity: 0.2; cursor: not-allowed; }
+    .page-btn.arrow { font-size: 14px; }
+
     .lightbox {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0, 0, 0, 0.96); backdrop-filter: blur(10px);
@@ -89,7 +115,6 @@
     }
     .lightbox.active { display: flex; }
     .lightbox img { max-width: 90%; max-height: 85%; border-radius: 4px; }
-
     .close-lightbox { position: absolute; top: 30px; right: 40px; color: white; font-size: 35px; cursor: pointer; }
 
     #backToTop {
@@ -103,17 +128,12 @@
     #backToTop.show { opacity: 1; visibility: visible; }
     #backToTop:hover { transform: translateY(-5px); background: #000000; box-shadow: 0 6px 20px rgba(255,255,255,0.1); }
 
-    .contact-section {
-      text-align: center; padding: 100px 20px;
-      margin-top: 20px;
-    }
+    .contact-section { text-align: center; padding: 100px 20px; margin-top: 20px; }
     .contact-title { 
       font-size: 16px; font-weight: 500; color: var(--text); 
       margin-bottom: 40px; letter-spacing: 2px; text-transform: uppercase;
     }
-    .contact-button-container {
-      display: flex; flex-direction: column; align-items: center; gap: 15px;
-    }
+    .contact-button-container { display: flex; flex-direction: column; align-items: center; gap: 15px; }
     .contact-btn {
       display: flex; align-items: center; justify-content: center; gap: 12px;
       width: 100%; max-width: 320px; padding: 16px 30px;
@@ -124,10 +144,7 @@
       backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
     }
     .contact-btn i { font-size: 20px; }
-    .contact-btn:hover {
-      background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.4);
-      transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-    }
+    .contact-btn:hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.4); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); }
     .contact-btn.whatsapp:hover i { color: #25D366; }
     .contact-btn.instagram:hover i { color: #E1306C; }
     
@@ -139,8 +156,8 @@
       .logo img { height: 60px; } 
       main { padding-top: 130px; } 
     }
-    /* CHANGED: was 1 column, now 2 columns on small mobile */
-    @media (max-width: 500px) { .gallery { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
+    /* 2 columns on small mobile, never 1 */
+    @media (max-width: 500px) { .gallery { grid-template-columns: 1fr; } }
     @media (min-width: 768px) { .contact-button-container { flex-direction: row; justify-content: center; } }
   </style>
 </head>
@@ -158,8 +175,10 @@
 </header>
 
 <main>
+  <!-- ✏️ CHANGE: heading per category -->
   <h1 class="page-title">Anime</h1>
   <div class="gallery" id="gallery"></div>
+  <div class="pagination" id="pagination"></div>
 </main>
 
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
@@ -186,43 +205,107 @@
 <footer><p>© 2026 CAVERSEN PRINT — MOROCCO</p></footer>
 
 <script>
+  // ✏️ CHANGE: images per page if you want (20 is good)
+  const IMAGES_PER_PAGE = 20;
+
   const gallery = document.getElementById('gallery');
+  const pagination = document.getElementById('pagination');
   const lightbox = document.getElementById('lightbox');
   const lightboxImg = document.getElementById('lightbox-img');
   const backToTop = document.getElementById('backToTop');
 
+  let allImages = [];   // filled automatically by discovery
+  let currentPage = 1;
+  let totalPages = 1;
+
+  // ── STEP 1: discover how many images exist ──
+  // tries 1.webp, 2.webp... stops when one 404s
+  function discoverImages() {
+    let i = 1;
+    function tryNext() {
+      const fileName = `${i}.webp`;
+      const img = new Image();
+      img.src = fileName;
+      img.onload = () => {
+        allImages.push(fileName);
+        i++;
+        tryNext();
+      };
+      img.onerror = () => {
+        // done — now we know total
+        totalPages = Math.max(1, Math.ceil(allImages.length / IMAGES_PER_PAGE));
+        renderPage(1);
+      };
+    }
+    tryNext();
+  }
+
+  // ── STEP 2: render one page of images ──
+  function renderPage(page) {
+    currentPage = page;
+    gallery.innerHTML = '';
+
+    const start = (page - 1) * IMAGES_PER_PAGE;
+    const end = Math.min(start + IMAGES_PER_PAGE, allImages.length);
+    const pageImages = allImages.slice(start, end);
+
+    pageImages.forEach((fileName, idx) => {
+      const item = document.createElement('div');
+      item.className = 'gallery-item';
+      item.innerHTML = `<img src="${fileName}" alt="Print ${start + idx + 1}" loading="lazy">`;
+      item.onclick = () => openLightbox(fileName);
+      gallery.appendChild(item);
+    });
+
+    renderPagination();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ── STEP 3: render pagination buttons ──
+  function renderPagination() {
+    pagination.innerHTML = '';
+    if (totalPages <= 1) return; // hide if only 1 page
+
+    const prev = document.createElement('button');
+    prev.className = 'page-btn arrow';
+    prev.innerHTML = '<i class="fa-solid fa-chevron-left"></i>';
+    prev.disabled = currentPage === 1;
+    prev.onclick = () => renderPage(currentPage - 1);
+    pagination.appendChild(prev);
+
+    getPageRange(currentPage, totalPages).forEach(p => {
+      const btn = document.createElement('button');
+      btn.className = 'page-btn' + (p === currentPage ? ' active' : '');
+      btn.textContent = p;
+      btn.onclick = () => renderPage(p);
+      pagination.appendChild(btn);
+    });
+
+    const next = document.createElement('button');
+    next.className = 'page-btn arrow';
+    next.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
+    next.disabled = currentPage === totalPages;
+    next.onclick = () => renderPage(currentPage + 1);
+    pagination.appendChild(next);
+  }
+
+  function getPageRange(current, total) {
+    if (total <= 5) return Array.from({length: total}, (_, i) => i + 1);
+    if (current <= 3) return [1, 2, 3, 4, 5];
+    if (current >= total - 2) return [total-4, total-3, total-2, total-1, total];
+    return [current-2, current-1, current, current+1, current+2];
+  }
+
+  // ── LIGHTBOX ──
   function openLightbox(src) { lightboxImg.src = src; lightbox.classList.add('active'); document.body.style.overflow = 'hidden'; }
   function closeLightbox() { lightbox.classList.remove('active'); document.body.style.overflow = 'auto'; }
 
-  window.onscroll = () => {
-    if (window.scrollY > 400) backToTop.classList.add('show');
-    else backToTop.classList.remove('show');
-  };
-
+  // ── BACK TO TOP ──
+  window.onscroll = () => backToTop.classList.toggle('show', window.scrollY > 400);
   function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
-  // CHANGED: auto-discover images instead of hardcoded 100
-  // tries 1.webp, 2.webp... stops when one doesn't exist
-  let i = 1;
-  function tryNext() {
-    const fileName = `${i}.webp`;
-    const img = new Image();
-    img.src = fileName;
-    img.onload = () => {
-      const item = document.createElement('div');
-      item.className = 'gallery-item';
-      item.innerHTML = `<img src="${fileName}" alt="Print ${i}" loading="lazy">`;
-      item.onclick = () => openLightbox(fileName);
-      gallery.appendChild(item);
-      i++;
-      tryNext();
-    };
-    img.onerror = () => {
-      // this image doesn't exist — we're done
-    };
-  }
-  tryNext();
+  // ── START ──
+  discoverImages();
 </script>
 </body>
 </html>
-
