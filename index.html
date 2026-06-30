@@ -1,3 +1,6 @@
+Here is the updated HTML code with all the accent and border highlights swapped to your exact red color (`#d91f27`).
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,25 +15,29 @@
   <meta property="og:type" content="website" />
   
   <link rel="icon" type="image/png" href="favicon.png">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Cairo:wght@600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Cairo:wght@600&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     
     :root { 
-      --bg-dark: #000000;
-      --glass: rgba(255, 255, 255, 0.03); 
-      --glass-hover: rgba(255, 255, 255, 0.07);
-      --border: rgba(255, 255, 255, 0.08); 
-      --text: #f0ece4; 
-      --muted: #888; 
+      --bg: #000000;
+      --bg-soft: #000000;
+      --card: #000000;
+      --card-hover: #000000;
+      --border: rgba(242, 236, 224, 0.08);
+      --border-hover: rgba(217, 31, 39, 0.4);
+      --text: #f2ece0;
+      --muted: #8a6f5c;
+      --accent: #d91f27;
+      --accent-soft: rgba(217, 31, 39, 0.12);
     }
 
     html, body { 
       min-height: 100vh;
       width: 100%; 
-      background-color: var(--bg-dark); 
+      background-color: var(--bg);
       color: var(--text); 
       font-family: 'Montserrat', sans-serif; 
       display: flex; 
@@ -38,88 +45,129 @@
       overflow-x: hidden;
     }
 
+    /* subtle film-grain texture, cheap to render (no blur) */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.035;
+      z-index: 1;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
     header { 
       position: fixed; top: 0; left: 0; width: 100%;
-      background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px); padding: 10px 40px; 
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 40px; 
       display: grid; grid-template-columns: 1fr 1fr 1fr; 
-      align-items: center; border-bottom: 1px solid var(--border); z-index: 1000;
+      align-items: center; z-index: 1000;
     }
 
     .logo img { height: 75px; width: auto; display: block; margin: 0 auto; }
     
-    .header-socials { display: flex; gap: 20px; justify-content: flex-end; }
-    .header-socials a { color: var(--muted); font-size: 19px; transition: 0.3s; text-decoration: none; }
-    .header-socials a:hover { color: var(--text); }
+    .header-socials { display: flex; gap: 22px; justify-content: flex-end; }
+    .header-socials a { 
+      color: var(--muted); font-size: 18px; transition: color 0.2s ease; text-decoration: none; 
+    }
+    .header-socials a:hover { color: var(--accent); }
     
     main { 
       flex: 1; 
-      padding: 140px 40px 60px; 
+      padding: 150px 40px 60px; 
       max-width: 1200px; 
       margin: 0 auto; 
       width: 100%;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-eyebrow {
+      font-size: 10px; font-weight: 600; letter-spacing: 5px;
+      text-transform: uppercase; color: var(--accent);
+      text-align: center; margin-bottom: 14px;
     }
 
     .hero-title { 
-      font-size: 12px; font-weight: 300; letter-spacing: 8px; 
-      text-transform: uppercase; margin-bottom: 50px; 
-      color: var(--muted); text-align: center;
+      font-size: clamp(1rem, 1vw, 1rem);
+      font-weight: 600;
+      letter-spacing: 10px;
+      text-align: center;
+      margin-bottom: 56px;
+      color: var(--text);
     }
 
     .collection-grid { 
       display: grid; 
       grid-template-columns: repeat(3, 1fr); 
-      gap: 20px; 
+      gap: 16px; 
     }
 
     .card { 
-      background: var(--glass); 
-      border: 1px solid var(--border); 
-      border-radius: 15px; 
-      height: 160px; 
+      background: var(--card); 
+      border: 2px solid var(--border); 
+      border-radius: 20px; 
+      height: 168px; 
       display: flex; 
       flex-direction: column;
       justify-content: center; 
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       text-decoration: none; 
       color: var(--text); 
-      transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+      transition: transform 0.25s ease, border-color 0.25s ease, background-color 0.25s ease;
       position: relative;
       overflow: hidden;
     }
 
-    .card::before {
+    /* warm light catching the corner on hover — cheap, just a gradient + transform, no blur */
+    .card::after {
       content: '';
       position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: radial-gradient(circle at center, rgba(255,255,255,0.05) 0%, transparent 70%);
+      top: -50%; left: -50%;
+      width: 60%; height: 60%;
+      background: radial-gradient(circle, var(--accent-soft) 0%, transparent 70%);
       opacity: 0;
-      transition: opacity 0.4s;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
     }
 
     .card:hover { 
-      background: var(--glass-hover); 
-      border-color: rgba(255, 255, 255, 0.2);
-      transform: translateY(-5px);
+      background: var(--card-hover); 
+      border-color: var(--border-hover);
+      transform: translateY(-4px);
     }
-
-    .card:hover::before { opacity: 1; }
+    .card:hover::after { opacity: 1; }
 
     .card h2 { 
-      font-size: 0.95rem; 
-      font-weight: 500; 
-      letter-spacing: 3px; 
+      font-size: 0.92rem; 
+      font-weight: 700; 
+      letter-spacing: 1.5px; 
       text-transform: uppercase; 
       z-index: 1;
     }
 
     .card .ar { 
       font-family: 'Cairo', sans-serif;
-      font-size: 0.95rem;
+      font-size: 1rem;
       font-weight: 600;
       color: var(--muted);
       direction: rtl;
+      z-index: 1;
+      transition: color 0.25s ease;
+    }
+    .card:hover .ar { color: var(--accent); }
+
+    /* tiny corner index mark — reads as a print-shop catalog tag, not decoration */
+    .card .tag {
+      position: absolute;
+      top: 12px; left: 14px;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      color: var(--muted);
+      opacity: 0.5;
       z-index: 1;
     }
 
@@ -127,7 +175,9 @@
       flex-shrink: 0; padding: 30px; text-align: center;
       font-size: 9px; color: var(--muted); letter-spacing: 3px; 
       border-top: 1px solid var(--border);
-      background: #000;
+      background: var(--bg);
+      position: relative;
+      z-index: 2;
     }
 
     @media (max-width: 900px) { 
@@ -137,7 +187,7 @@
 
     @media (max-width: 600px) {
       .collection-grid { grid-template-columns: 1fr; }
-      .card { height: 120px; }
+      .card { height: 128px; }
       main { padding-top: 120px; }
       .logo img { height: 60px; }
     }
@@ -151,28 +201,23 @@
     <img src="logo.png" alt="Logo">
   </a>
   <div class="header-socials">
-    <a href="https://www.instagram.com/caversen.maroc/" target="_blank"><i class="fab fa-instagram"></i></a>
+    <a href="https://www.instagram.com/caversen.ma/" target="_blank"><i class="fab fa-instagram"></i></a>
     <a href="https://wa.me/212700256668" target="_blank"><i class="fab fa-whatsapp"></i></a>
   </div>
 </header>
 
 <main>
-  <h1 class="hero-title">Our Collections</h1>
+  <h1 class="hero-title">OUR COLLECTIONS</h1>
   <div class="collection-grid">
-    <a href="Anime/index.html" class="card"><h2>Anime</h2><span class="ar">أنمي</span></a>
-    <a href="Bikes/index.html" class="card"><h2>Bikes & Cars</h2><span class="ar">دراجات وسيارات</span></a>
-    <a href="Girls/index.html" class="card"><h2>For Girls</h2><span class="ar">للبنات</span></a>
-    <a href="Football/index.html" class="card"><h2>Football</h2><span class="ar">كرة القدم</span></a>
-    <a href="Gaming/index.html" class="card"><h2>Gaming</h2><span class="ar">ألعاب فيديو</span></a>
-    <a href="Islam/index.html" class="card"><h2>Islam</h2><span class="ar">إسلاميات</span></a>
-    <a href="Movies/index.html" class="card"><h2>Movies & Music</h2><span class="ar">أفلام وموسيقى</span></a>
-    <a href="Quotes/index.html" class="card"><h2>Quotes</h2><span class="ar">اقتباسات</span></a>
-    <a href="Others/index.html" class="card"><h2>Others</h2><span class="ar">أخرى</span></a>
-
-    <!-- ✅ NEW CATEGORIES — add/remove as needed -->
-    <!-- <a href="Nature/index.html" class="card"><h2>Nature</h2></a> -->
-    <!-- <a href="Cars/index.html" class="card"><h2>Cars</h2></a> -->
-    <!-- <a href="Architecture/index.html" class="card"><h2>Architecture</h2></a> -->
+    <a href="Anime/index.html" class="card"><span class="tag">01</span><h2>Anime</h2><span class="ar">أنمي</span></a>
+    <a href="Bikes/index.html" class="card"><span class="tag">02</span><h2>Bikes & Cars</h2><span class="ar">دراجات وسيارات</span></a>
+    <a href="Girls/index.html" class="card"><span class="tag">03</span><h2>For Girls</h2><span class="ar">للبنات</span></a>
+    <a href="Football/index.html" class="card"><span class="tag">04</span><h2>Football</h2><span class="ar">كرة القدم</span></a>
+    <a href="Gaming/index.html" class="card"><span class="tag">05</span><h2>Gaming</h2><span class="ar">ألعاب فيديو</span></a>
+    <a href="Islam/index.html" class="card"><span class="tag">06</span><h2>Islam</h2><span class="ar">إسلاميات</span></a>
+    <a href="Movies/index.html" class="card"><span class="tag">07</span><h2>Movies & Music</h2><span class="ar">أفلام وموسيقى</span></a>
+    <a href="Quotes/index.html" class="card"><span class="tag">08</span><h2>Quotes</h2><span class="ar">اقتباسات</span></a>
+    <a href="Others/index.html" class="card"><span class="tag">09</span><h2>Others</h2><span class="ar">أخرى</span></a>
   </div>
 </main>
 
@@ -180,3 +225,5 @@
 
 </body>
 </html>
+
+```
