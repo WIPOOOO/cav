@@ -87,19 +87,22 @@
     }
 
     .hero-title { 
-      font-size: clamp(1rem, 1vw, 1rem);
-      font-weight: 600;
-      letter-spacing: 10px;
-      text-align: center;
-      margin-bottom: 56px;
-      color: var(--text);
-    }
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 10px;
+  text-align: center;
+  margin-bottom: 20px;
+  color: var(--text);
+  flex-shrink: 0;
+}
 
-    .collection-grid { 
-      display: grid; 
-      grid-template-columns: repeat(3, 1fr); 
-      gap: 16px; 
-    }
+.collection-grid { 
+  display: grid; 
+  grid-template-columns: repeat(4, 1fr); 
+  gap: 12px; 
+  flex: 1;
+  min-height: 0;
+}
 
     .card { 
       background: var(--card); 
