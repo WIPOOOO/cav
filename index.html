@@ -6,13 +6,13 @@
   <title>Caversen Print — High Quality Wall Art</title>
   
   <meta property="og:title" content="Caversen Print — High Quality Wall Art" />
-<meta property="og:description" content="Premium wall art prints — Anime, Football, Gaming, Islam & more. Delivered in Morocco." />
-<meta property="og:image" content="https://caversen.com/preview.webp" />
-<meta property="og:url" content="https://caversen.com" />
-<meta property="og:type" content="website" />
+  <meta property="og:description" content="Premium wall art prints — Anime, Football, Gaming, Islam & more. Delivered in Morocco." />
+  <meta property="og:image" content="https://caversen.com/preview.webp" />
+  <meta property="og:url" content="https://caversen.com" />
+  <meta property="og:type" content="website" />
   
   <link rel="icon" type="image/png" href="favicon.png">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Cairo:wght@600&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   
   <style>
@@ -78,8 +78,10 @@
       border-radius: 15px; 
       height: 160px; 
       display: flex; 
+      flex-direction: column;
       justify-content: center; 
       align-items: center;
+      gap: 6px;
       text-decoration: none; 
       color: var(--text); 
       transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
@@ -109,6 +111,15 @@
       font-weight: 500; 
       letter-spacing: 3px; 
       text-transform: uppercase; 
+      z-index: 1;
+    }
+
+    .card .ar { 
+      font-family: 'Cairo', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--muted);
+      direction: rtl;
       z-index: 1;
     }
 
@@ -148,16 +159,20 @@
 <main>
   <h1 class="hero-title">Our Collections</h1>
   <div class="collection-grid">
-    <a href="Anime/index.html" class="card"><h2>Anime</h2></a>
-    <a href="Bikes/index.html" class="card"><h2>Bikes & Cars</h2></a>
-    <a href="Girls/index.html" class="card"><h2>For Girls</h2></a>
-    <a href="Football/index.html" class="card"><h2>Football</h2></a>
-    <a href="Gaming/index.html" class="card"><h2>Gaming</h2></a>
-    <a href="Islam/index.html" class="card"><h2>Islam</h2></a>
-    <a href="Movies/index.html" class="card"><h2>Movies & Music</h2></a>
-    <a href="Quotes/index.html" class="card"><h2>Quotes</h2></a>
-    <a href="Others/index.html" class="card"><h2>Others</h2></a>
-    <a href="Nature/index.html" class="card"><h2>Nature</h2></a>
+    <a href="Anime/index.html" class="card"><h2>Anime</h2><span class="ar">أنمي</span></a>
+    <a href="Bikes/index.html" class="card"><h2>Bikes & Cars</h2><span class="ar">دراجات وسيارات</span></a>
+    <a href="Girls/index.html" class="card"><h2>For Girls</h2><span class="ar">للبنات</span></a>
+    <a href="Football/index.html" class="card"><h2>Football</h2><span class="ar">كرة القدم</span></a>
+    <a href="Gaming/index.html" class="card"><h2>Gaming</h2><span class="ar">ألعاب فيديو</span></a>
+    <a href="Islam/index.html" class="card"><h2>Islam</h2><span class="ar">إسلاميات</span></a>
+    <a href="Movies/index.html" class="card"><h2>Movies & Music</h2><span class="ar">أفلام وموسيقى</span></a>
+    <a href="Quotes/index.html" class="card"><h2>Quotes</h2><span class="ar">اقتباسات</span></a>
+    <a href="Others/index.html" class="card"><h2>Others</h2><span class="ar">أخرى</span></a>
+
+    <!-- ✅ NEW CATEGORIES — add/remove as needed -->
+    <!-- <a href="Nature/index.html" class="card"><h2>Nature</h2></a> -->
+    <!-- <a href="Cars/index.html" class="card"><h2>Cars</h2></a> -->
+    <!-- <a href="Architecture/index.html" class="card"><h2>Architecture</h2></a> -->
   </div>
 </main>
 
