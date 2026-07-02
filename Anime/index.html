@@ -287,30 +287,33 @@
   let currentPage = 1;
   let totalPages = 1;
 
-  // ── STEP 1: discover how many images exist (skips gaps, stops after a long dry spell) ──
+  // ── STEP 1: discover images — fast HEAD checks, shows page 1 early, keeps scanning silently ──
 function discoverImages() {
-  const BATCH_SIZE = 15;        // check 15 numbers at once
-  const MAX_CONSECUTIVE_MISSES = 25; // stop only after this many numbers in a row are missing
-  const HARD_LIMIT = 300;      // absolute safety cap, just in case
+  const BATCH_SIZE = 15;
+  const MAX_CONSECUTIVE_MISSES = 25;
+  const HARD_LIMIT = 1000;
   let nextToCheck = 1;
   let consecutiveMisses = 0;
   let keepGoing = true;
+  let firstPageShown = false;
 
   function checkOne(num) {
-    return new Promise(resolve => {
-      const fileName = `${num}.webp`;
-      const img = new Image();
-      img.onload = () => resolve({ num, fileName, exists: true });
-      img.onerror = () => resolve({ num, fileName, exists: false });
-      img.src = fileName;
-    });
+    const fileName = `${num}.webp`;
+    return fetch(fileName, { method: 'HEAD' })
+      .then(res => ({ num, fileName, exists: res.ok }))
+      .catch(() => ({ num, fileName, exists: false }));
+  }
+
+  function showFirstPageIfReady() {
+    if (!firstPageShown && allImages.length >= IMAGES_PER_PAGE) {
+      firstPageShown = true;
+      totalPages = Math.max(1, Math.ceil(allImages.length / IMAGES_PER_PAGE));
+      renderGalleryOnly(1); // page 1 is ready — show it now, rest keeps scanning behind the scenes
+    }
   }
 
   function runBatch() {
-    if (!keepGoing || nextToCheck > HARD_LIMIT) {
-      finish();
-      return;
-    }
+    if (!keepGoing || nextToCheck > HARD_LIMIT) { finish(); return; }
     const batchNums = [];
     for (let i = 0; i < BATCH_SIZE; i++) batchNums.push(nextToCheck + i);
     nextToCheck += BATCH_SIZE;
@@ -320,27 +323,25 @@ function discoverImages() {
       for (const r of results) {
         if (r.exists) {
           allImages.push(r.fileName);
-          consecutiveMisses = 0; // found one — reset the gap counter
+          consecutiveMisses = 0;
         } else {
           consecutiveMisses++;
-          if (consecutiveMisses >= MAX_CONSECUTIVE_MISSES) {
-            keepGoing = false;
-            break;
-          }
+          if (consecutiveMisses >= MAX_CONSECUTIVE_MISSES) { keepGoing = false; break; }
         }
       }
-      if (keepGoing) {
-        runBatch();
-      } else {
-        finish();
-      }
+      showFirstPageIfReady();
+      if (keepGoing) runBatch(); else finish();
     });
   }
 
   function finish() {
     allImages.sort((a, b) => parseInt(a) - parseInt(b));
     totalPages = Math.max(1, Math.ceil(allImages.length / IMAGES_PER_PAGE));
-    renderPage(1);
+    if (!firstPageShown) {
+      renderGalleryOnly(1); // total images < one full page — show whatever was found
+    } else {
+      renderPagination(); // just quietly refresh the page-number buttons, don't disturb the user
+    }
   }
 
   runBatch();
