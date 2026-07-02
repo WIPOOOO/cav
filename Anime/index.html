@@ -287,49 +287,64 @@
   let currentPage = 1;
   let totalPages = 1;
 
-  // ── STEP 1: discover how many images exist (FAST — checks in parallel batches) ──
-  function discoverImages() {
-    const BATCH_SIZE = 15; // check 15 numbers at once
-    let nextToCheck = 1;
-    let keepGoing = true;
+  // ── STEP 1: discover how many images exist (skips gaps, stops after a long dry spell) ──
+function discoverImages() {
+  const BATCH_SIZE = 15;        // check 15 numbers at once
+  const MAX_CONSECUTIVE_MISSES = 25; // stop only after this many numbers in a row are missing
+  const HARD_LIMIT = 300;      // absolute safety cap, just in case
+  let nextToCheck = 1;
+  let consecutiveMisses = 0;
+  let keepGoing = true;
 
-    function checkOne(num) {
-      return new Promise(resolve => {
-        const fileName = `${num}.webp`;
-        const img = new Image();
-        img.onload = () => resolve({ num, fileName, exists: true });
-        img.onerror = () => resolve({ num, fileName, exists: false });
-        img.src = fileName;
-      });
+  function checkOne(num) {
+    return new Promise(resolve => {
+      const fileName = `${num}.webp`;
+      const img = new Image();
+      img.onload = () => resolve({ num, fileName, exists: true });
+      img.onerror = () => resolve({ num, fileName, exists: false });
+      img.src = fileName;
+    });
+  }
+
+  function runBatch() {
+    if (!keepGoing || nextToCheck > HARD_LIMIT) {
+      finish();
+      return;
     }
+    const batchNums = [];
+    for (let i = 0; i < BATCH_SIZE; i++) batchNums.push(nextToCheck + i);
+    nextToCheck += BATCH_SIZE;
 
-    function runBatch() {
-      if (!keepGoing) return;
-      const batchNums = [];
-      for (let i = 0; i < BATCH_SIZE; i++) batchNums.push(nextToCheck + i);
-      nextToCheck += BATCH_SIZE;
-
-      Promise.all(batchNums.map(checkOne)).then(results => {
-        results.sort((a, b) => a.num - b.num);
-        for (const r of results) {
-          if (r.exists) {
-            allImages.push(r.fileName);
-          } else {
+    Promise.all(batchNums.map(checkOne)).then(results => {
+      results.sort((a, b) => a.num - b.num);
+      for (const r of results) {
+        if (r.exists) {
+          allImages.push(r.fileName);
+          consecutiveMisses = 0; // found one — reset the gap counter
+        } else {
+          consecutiveMisses++;
+          if (consecutiveMisses >= MAX_CONSECUTIVE_MISSES) {
             keepGoing = false;
             break;
           }
         }
-        if (keepGoing) {
-          runBatch();
-        } else {
-          totalPages = Math.max(1, Math.ceil(allImages.length / IMAGES_PER_PAGE));
-          renderPage(1);
-        }
-      });
-    }
-
-    runBatch();
+      }
+      if (keepGoing) {
+        runBatch();
+      } else {
+        finish();
+      }
+    });
   }
+
+  function finish() {
+    allImages.sort((a, b) => parseInt(a) - parseInt(b));
+    totalPages = Math.max(1, Math.ceil(allImages.length / IMAGES_PER_PAGE));
+    renderPage(1);
+  }
+
+  runBatch();
+}
 
   // ── STEP 2: render one page of images ──
   function renderGalleryOnly(page) {
