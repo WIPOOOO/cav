@@ -22,10 +22,10 @@
 
     :root {
       --bg: #000000;
-      --card: #141414;
+      --card: #000000;
       --text: #f2ece0;
       --muted: #8a6f5c;
-      --red: #D91F27;
+      --red: #b31f24;
       --line: rgba(242, 236, 224, 0.14);
     }
 
@@ -45,13 +45,17 @@
       background-size: 22px 22px;
     }
 
-    header {
-      position: fixed; top: 0; left: 0; width: 100%;
-      background: var(--bg);
-      padding: 16px 40px;
-      display: grid; grid-template-columns: 1fr 1fr 1fr;
-      align-items: center; z-index: 1000;
-    }
+    header { 
+  position: fixed; top: 0; left: 0; width: 100%;
+  background-color: rgba(0, 0, 0, 0.75);
+  background-image: radial-gradient(var(--line) 1px, transparent 1px);
+  background-size: 22px 22px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  padding: 16px 40px;
+  display: grid; grid-template-columns: 1fr 1fr 1fr; 
+  align-items: center; z-index: 1000;
+}
 
     .logo img { height: 70px; width: auto; display: block; margin: 0 auto; }
 
@@ -81,7 +85,7 @@
 
     .hero-title {
       font-weight: 800;
-      font-size: clamp(1.8rem, 4.2vw, 3rem);
+      font-size: clamp(1.5rem, 3vw, 3rem);
       letter-spacing: 6px;
       text-transform: uppercase;
       color: var(--text);
@@ -120,7 +124,7 @@
     .card {
       background: var(--card);
       border: 2px solid var(--line);
-      border-radius: 3px;
+      border-radius: 20px;
       height: 164px;
       display: flex;
       flex-direction: column;
@@ -191,7 +195,7 @@
       flex-shrink: 0;
       padding: 30px;
       text-align: center;
-      font-size: 10px;
+      font-size: 13px;
       color: var(--muted);
       letter-spacing: 3px;
     }
