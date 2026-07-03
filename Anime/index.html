@@ -135,7 +135,7 @@
       .quick-download { display: flex; }
     }
     .gallery-item:hover { border-color: rgba(255, 255, 255, 0.25); transform: translateY(-6px); background: var(--glass-hover); }
-    .gallery-item img { width: 100%; display: block; transition: 0.5s ease; }
+    .gallery-item img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; display: block; transition: 0.5s ease; }
     .gallery-item:hover img { transform: scale(1.03); }
 
     /* ── PAGINATION ── */
@@ -431,7 +431,7 @@ function discoverImages() {
         <div class="quick-download" onclick="event.stopPropagation(); downloadImage(${imgIndex})">
           <i class="fa-solid fa-download"></i>
           <span class="qd-text">
-            <span class="qd-ar">تحميل</span>
+            <span class="qd-ar">تحميل الصورة</span>
           </span>
         </div>
         <img src="${fileName}" alt="Print ${imgIndex + 1}" loading="lazy">
