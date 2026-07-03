@@ -485,21 +485,31 @@ function discoverImages() {
     }
   }
 
-  // ── DOWNLOAD ──
-  // Filename like: Caversen-Jul03-47-812.webp
+  // ── DOWNLOAD (converts webp → jpg in-browser via canvas) ──
+  // Filename like: Caversen-Jul03-47-812.jpg
   // (month-day, second, millisecond) so two downloads in the same second never overwrite each other
   function downloadImage() {
     const src = allImages[lightboxIndex];
-    const ext = src.split('.').pop();
 
     const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     const now = new Date();
     const stamp = `${months[now.getMonth()]}${String(now.getDate()).padStart(2,'0')}-${String(now.getSeconds()).padStart(2,'0')}-${String(now.getMilliseconds()).padStart(3,'0')}`;
-    const filename = `Caversen-${stamp}.${ext}`;
+    const filename = `Caversen-${stamp}.jpg`;
 
-    fetch(src)
-      .then(res => res.blob())
-      .then(blob => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext('2d');
+      // JPG has no transparency channel — fill white behind the image first
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
+
+      canvas.toBlob((blob) => {
+        if (!blob) { window.open(src, '_blank'); return; }
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
@@ -508,8 +518,10 @@ function discoverImages() {
         a.click();
         a.remove();
         URL.revokeObjectURL(url);
-      })
-      .catch(() => window.open(src, '_blank')); // fallback if fetch fails (e.g. cross-origin)
+      }, 'image/jpeg', 0.92);
+    };
+    img.onerror = () => window.open(src, '_blank'); // fallback if conversion fails
+    img.src = src;
   }
 
   // Keyboard arrows
