@@ -110,9 +110,30 @@
     }
 
     .gallery-item { 
+      position: relative;
       background: var(--glass); border: 1px solid var(--border); 
       border-radius: 12px; overflow: hidden; cursor: zoom-in;
       transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    /* ── QUICK DOWNLOAD BADGE (mobile only, top-left of each thumbnail) ── */
+    .quick-download {
+      position: absolute; top: 10px; left: 10px; z-index: 5;
+      display: none; align-items: center; gap: 6px;
+      padding: 6px 12px;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 50px;
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      cursor: pointer;
+    }
+    .quick-download i { font-size: 11px; color: var(--red); }
+    .quick-download .qd-text { display: flex; flex-direction: column; line-height: 1.15; }
+    .quick-download .qd-en { font-size: 8px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #fff; }
+    .quick-download .qd-ar { font-family: 'Cairo', sans-serif; font-weight: 600; font-size: 8px; color: #ddd; direction: rtl; }
+
+    @media (max-width: 900px) {
+      .quick-download { display: flex; }
     }
     .gallery-item:hover { border-color: rgba(255, 255, 255, 0.25); transform: translateY(-6px); background: var(--glass-hover); }
     .gallery-item img { width: 100%; display: block; transition: 0.5s ease; }
@@ -406,8 +427,18 @@ function discoverImages() {
     pageImages.forEach((fileName, idx) => {
       const item = document.createElement('div');
       item.className = 'gallery-item';
-      item.innerHTML = `<img src="${fileName}" alt="Print ${start + idx + 1}" loading="lazy">`;
-      item.onclick = () => openLightbox(start + idx);
+      const imgIndex = start + idx;
+      item.innerHTML = `
+        <div class="quick-download" onclick="event.stopPropagation(); downloadImage(${imgIndex})">
+          <i class="fa-solid fa-download"></i>
+          <span class="qd-text">
+            <span class="qd-en">Download</span>
+            <span class="qd-ar">تحميل</span>
+          </span>
+        </div>
+        <img src="${fileName}" alt="Print ${imgIndex + 1}" loading="lazy">
+      `;
+      item.onclick = () => openLightbox(imgIndex);
       gallery.appendChild(item);
     });
 
@@ -488,8 +519,9 @@ function discoverImages() {
   // ── DOWNLOAD (converts webp → jpg in-browser via canvas) ──
   // Filename like: Caversen-Jul03-47-812.jpg
   // (month-day, second, millisecond) so two downloads in the same second never overwrite each other
-  function downloadImage() {
-    const src = allImages[lightboxIndex];
+  function downloadImage(index) {
+    const idx = (typeof index === 'number') ? index : lightboxIndex;
+    const src = allImages[idx];
 
     const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     const now = new Date();
