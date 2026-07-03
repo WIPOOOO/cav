@@ -127,16 +127,15 @@
       backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
       cursor: pointer;
     }
-    .quick-download i { font-size: 11px; color: var(--red); }
+    .quick-download i { font-size: 11px; color: #ffffff; }
     .quick-download .qd-text { display: flex; flex-direction: column; line-height: 1.15; }
-    .quick-download .qd-en { font-size: 8px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #fff; }
-    .quick-download .qd-ar { font-family: 'Cairo', sans-serif; font-weight: 600; font-size: 8px; color: #ddd; direction: rtl; }
+    .quick-download .qd-ar { font-family: 'Cairo', sans-serif; font-weight: 600; font-size: 10px; color: #fff; direction: rtl; }
 
     @media (max-width: 900px) {
       .quick-download { display: flex; }
     }
     .gallery-item:hover { border-color: rgba(255, 255, 255, 0.25); transform: translateY(-6px); background: var(--glass-hover); }
-    .gallery-item img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; display: block; transition: 0.5s ease; }
+    .gallery-item img { width: 100%; display: block; transition: 0.5s ease; }
     .gallery-item:hover img { transform: scale(1.03); }
 
     /* ── PAGINATION ── */
@@ -432,7 +431,6 @@ function discoverImages() {
         <div class="quick-download" onclick="event.stopPropagation(); downloadImage(${imgIndex})">
           <i class="fa-solid fa-download"></i>
           <span class="qd-text">
-            <span class="qd-en">Download</span>
             <span class="qd-ar">تحميل</span>
           </span>
         </div>
